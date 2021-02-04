@@ -422,6 +422,9 @@ class HCIdump(Thread):
             (temp, humi) = TH_STRUCT.unpack(xobj)
             return {"temperature": temp / 10, "humidity": humi / 10}
 
+        def obj0300(xobj):
+            return {"motion": xobj[0]}
+
         def obj0f00(xobj):
             (light,) = LIGHT_STRUCT.unpack(xobj + b'\x00')
             return {"motion": 1, "motion timer": 1, "light": 1 if light == 100 else 0}
@@ -513,6 +516,7 @@ class HCIdump(Thread):
             b'\x19\x10': (obj1910, True, False),
             b'\x0A\x10': (obj0a10, True, True),
             b'\x0D\x10': (obj0d10, False, True),
+            b'\x03\x00': (obj0300, True, False),
             b'\x0F\x00': (obj0f00, True, False),
             b'\x01\x04': (obj0104, False, True),
             b'\x02\x01': (obj0201, False, True),
@@ -646,6 +650,10 @@ class HCIdump(Thread):
             # flag advertisements without mac address in service data
             # MJYD02YL (F6 07) has no mac address in the motion (48 59) advertisements
             if device_type == b'\xF6\x07' and framectrl_data == b'\x48\x59':
+                # MJYD02YL does not have a MAC address in the service data of some advertisements
+                mac_in_service_data = False
+            if device_type == b'\xDD\x03' and framectrl_data == b'\x40\x30':
+                # MUE4094RT does not have a MAC address in the service data
                 mac_in_service_data = False
             else:
                 mac_in_service_data = True
