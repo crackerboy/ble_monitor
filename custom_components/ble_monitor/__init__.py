@@ -423,7 +423,7 @@ class HCIdump(Thread):
             return {"temperature": temp / 10, "humidity": humi / 10}
 
         def obj0300(xobj):
-            return {"motion": xobj[0]}
+            return {"motion": xobj[0], "motion timer": xobj[0]}
 
         def obj0f00(xobj):
             (light,) = LIGHT_STRUCT.unpack(xobj + b'\x00')

@@ -466,9 +466,10 @@ class MotionBinarySensor(SwitchingSensor):
         if self._reset_timer > 0:
             _LOGGER.debug("Motion detection state is: %s", self._state)
             if self._state == 1:
-                self._start_timer = self._device_state_attributes["last motion"]
-                _LOGGER.debug(
-                    "Motion detection reset timer is set to: %i seconds, starting at %s",
-                    self._reset_timer, self._start_timer
-                )
-                async_call_later(self.hass, self._reset_timer, self.reset_state)
+                if self._device_state_attributes["last motion"]:
+                    self._start_timer = self._device_state_attributes["last motion"]
+                    _LOGGER.debug(
+                        "Motion detection reset timer is set to: %i seconds, starting at %s",
+                        self._reset_timer, self._start_timer
+                    )
+                    async_call_later(self.hass, self._reset_timer, self.reset_state)
