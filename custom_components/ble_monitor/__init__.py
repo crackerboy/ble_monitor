@@ -644,6 +644,8 @@ class HCIdump(Thread):
                 return None, None, None
             # extract device type
             device_type = data[xiaomi_index + 5:xiaomi_index + 7]
+            if device_type == b'\xDD\x03':
+                _LOGGER.error("Data from MUE4094RT: %s", data.hex())
             # extract frame control bits
             framectrl_data = data[xiaomi_index + 3:xiaomi_index + 5]
             framectrl, = struct.unpack('>H', framectrl_data)
